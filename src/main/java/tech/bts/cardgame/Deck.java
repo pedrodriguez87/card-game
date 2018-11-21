@@ -49,7 +49,7 @@ public class Deck {
 
     public Card pickCard() {
 
-        return cards.remove(cards.size() - 1);
+        return this.cards.remove(this.cards.size() - 1);
     }
 
     public Hand deal(int size) {

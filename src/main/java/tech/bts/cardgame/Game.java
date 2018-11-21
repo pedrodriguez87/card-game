@@ -1,20 +1,27 @@
 package tech.bts.cardgame;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Game {
+
 
     enum State { OPEN, PLAYING }
 
     private final Deck deck;
     private State state;
     private List<String> usernames;
+    private Map<String, Card> pickedCardByUsername;
+    private Map<String, Integer> discardsByUsername;
 
     public Game(Deck deck) {
         this.deck = deck;
         this.state = State.OPEN;
         this.usernames = new ArrayList<>();
+        this.pickedCardByUsername = new HashMap<>();
+        this.discardsByUsername = new HashMap<>();
     }
 
     public State getState() {
@@ -28,6 +35,8 @@ public class Game {
         }
 
         usernames.add(username);
+        discardsByUsername.put(username,0);
+
 
         if (usernames.size() == 2) {
             state = State.PLAYING;
@@ -35,11 +44,52 @@ public class Game {
     }
 
     public List<String> getPlayerNames() {
+
         return usernames;
     }
 
+    public Card pickCard(String username) {
 
+        if(!usernames.contains(username)) {
+            throw new PlayerNotInTheGameException();
+        }
 
+        if(state == State.OPEN) {
+            throw new CannotPick2CardsWhenStatusIsOpenException();
+        }
+
+        Card pickedCard = pickedCardByUsername.get(username);
+        if(pickedCard != null) {
+            throw new CannotPick2CardsInARowException();
+        }
+
+        Card newPickedCard = deck.pickCard();
+        pickedCardByUsername.put(username, newPickedCard);
+        return newPickedCard;
+
+    }
+
+    public void discard(String username) {
+
+        if(!pickedCardByUsername.containsKey(username)){
+            throw new CannotDiscardIfPlayerDidntPickedCardException();
+        }
+
+        int discards = discardsByUsername.get(username);
+        if (discards == 2) {
+            throw new CannotDiscardMoreThanTwoCardsExcepction();
+        }
+
+        discardsByUsername.put(username, discards + 1);
+
+        pickedCardByUsername.remove(username);
+
+    }
+
+    public Card keepCard(String username) {
+
+        return pickedCardByUsername.get(username);
+    }
 
     /**
      * Returns a negative integer, zero, or a positive integer
