@@ -1,8 +1,13 @@
 package tech.bts.cardgame;
 
 import org.junit.Test;
+import tech.bts.cardgame.exceptions.*;
+import tech.bts.cardgame.model.Card;
+import tech.bts.cardgame.model.Deck;
+import tech.bts.cardgame.model.Game;
 
 import java.util.Arrays;
+import java.util.HashSet;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
@@ -54,20 +59,6 @@ public class GameShould {
 
         // 3. assert/check something you expect
         assertThat(game.getState(), is(Game.State.OPEN));
-        assertThat(game.getPlayerNames(), is(Arrays.asList("john")));
-    }
-
-    @Test
-    public void be_playing_when_2_players_join() {
-
-        Game game = new Game(new Deck());
-
-        game.join("john");
-        game.join("mary");
-
-        assertThat(game.getState(), is(Game.State.PLAYING));
-        assertThat(game.getPlayerNames(), is(Arrays.asList("john", "mary")));
-
     }
 
     @Test(expected = JoiningNotAllowedException.class)
@@ -90,7 +81,6 @@ public class GameShould {
 
         game.join("john");
         game.join("mary");
-
         Card pickedCard = game.pickCard("john");
 
         assertThat(card, is(pickedCard));
@@ -192,22 +182,16 @@ public class GameShould {
     }
 
     @Test
-    public void a_player_keeps_card() {
+    public void be_playing_when_2_players_join() {
 
-        Deck deck = new Deck();
-        Card card1 = new Card(3, 2, 5);
-        Card card2 = new Card(2, 7, 1);
-        deck.add(card1);
-        deck.add(card2);
-        Game game = new Game(deck);
+        Game game = new Game(new Deck());
 
         game.join("susan");
         game.join("peter");
 
-        Card pickedCard = game.pickCard("susan");
-        Card keptcard = game.keepCard("susan");
+        assertThat(game.getState(), is(Game.State.PLAYING));
+        assertThat(game.getPlayerNames(), is(new HashSet<>(Arrays.asList("susan", "peter"))));
 
-        assertThat(pickedCard,is(keptcard));
 
     }
 
