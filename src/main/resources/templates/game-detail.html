@@ -1,0 +1,8 @@
+<a href="/games">Turn to games</a>
+<h1>Game {{game.id}}</h1>
+<p>State: {{game.state}}</p>
+<p>Players {{game.playerNames}}</p>
+
+{{#if gameIsOpen}}
+    <a href="/games/{{game.id}}/join">Join game</a>
+{{/if}}

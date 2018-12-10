@@ -1,5 +1,9 @@
 package tech.bts.cardgame.controller;
 
+import com.github.jknack.handlebars.Handlebars;
+import com.github.jknack.handlebars.Template;
+import com.github.jknack.handlebars.io.ClassPathTemplateLoader;
+import com.github.jknack.handlebars.io.TemplateLoader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,6 +16,8 @@ import tech.bts.cardgame.service.GameUser;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequestMapping(path = "/games")
@@ -43,10 +49,24 @@ public class GameWebController {
     }
 
     @RequestMapping(method = RequestMethod.GET, path = "/{gameId}")
-    public String getGameById(@PathVariable long gameId) {
+    public String getGameById(@PathVariable long gameId) throws IOException {
 
         Game game = gameService.getGameById(gameId);
 
+        TemplateLoader loader = new ClassPathTemplateLoader();
+        loader.setPrefix("/templates");
+        loader.setSuffix(".html");
+        Handlebars handlebars = new Handlebars(loader);
+
+        Template template = handlebars.compile("game-detail");
+
+        Map<String, Object> values = new HashMap<>();
+        values.put("game", game);
+        values.put("gameIsOpen", game.getState() == Game.State.OPEN);
+
+       return template.apply(values);
+
+        /*
         String result = "<a href=\"/games\">Turn to games</a>" +
                         "<h1>Game " + game.getId() + "</h1>" +
                         "<p>State: " + game.getState() + "</p>" +
@@ -58,6 +78,7 @@ public class GameWebController {
         }
 
         return result;
+        */
     }
 
     @RequestMapping(method = RequestMethod.GET, path = "/create")
