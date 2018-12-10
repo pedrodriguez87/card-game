@@ -70,14 +70,16 @@ public class GameWebController {
 
     private String buildGameList() {
 
-        String result = "<h1>List of games</h1>";
+        String result = "<h1>List of games</h1>\n";
 
-        result += "<ul><a href=\"/games/create\">Create Game</a></ul>";
+        result += "<ul><a href=\"/games/create\">Create Game</a>\n";
 
         for (Game game : gameService.getAllGames()) {
 
             result += "<li><a href=\"/games/" + game.getId() + "\">Game " + game.getId() + "</a> is " + game.getState() + "</li>";
         }
+
+        result += "</ul>";
 
         return result;
     }
