@@ -55,7 +55,7 @@ public class GameWebController {
 
         TemplateLoader loader = new ClassPathTemplateLoader();
         loader.setPrefix("/templates");
-        loader.setSuffix(".html");
+        loader.setSuffix(".hbs");
         Handlebars handlebars = new Handlebars(loader);
 
         Template template = handlebars.compile("game-detail");
