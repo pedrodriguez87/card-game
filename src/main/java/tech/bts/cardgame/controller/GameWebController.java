@@ -5,6 +5,7 @@ import com.github.jknack.handlebars.Template;
 import com.github.jknack.handlebars.io.ClassPathTemplateLoader;
 import com.github.jknack.handlebars.io.TemplateLoader;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import tech.bts.cardgame.model.Game;
 import tech.bts.cardgame.service.GameService;
 import tech.bts.cardgame.service.GameUser;
+import tech.bts.cardgame.util.HandlebarsUtil;
 
 
 import javax.servlet.http.HttpServletResponse;
@@ -24,28 +26,27 @@ import java.util.Map;
 public class GameWebController {
 
     private GameService gameService;
+    private Handlebars handlebars;
 
     @Autowired
     public GameWebController(GameService gameService) {
         this.gameService = gameService;
+
+        TemplateLoader loader = new ClassPathTemplateLoader();
+        loader.setPrefix("/templates");
+        loader.setSuffix(".hbs");
+        new Handlebars(loader);
     }
 
     @RequestMapping(method = RequestMethod.GET)
-    public String getAllGames() {
+    public String getAllGames() throws IOException {
 
-        String result = "<h1>List of games</h1>\n";
+        Template template = HandlebarsUtil.compile("game-list");
 
-        result += "<ul><a href=\"/games/create\">Create Game</a>\n";
+        Map<String, Object> values = new HashMap<>();
+        values.put("games", gameService.getAllGames());
 
-        for (Game game : gameService.getAllGames()) {
-
-            result += "<li><a href=\"/games/" + game.getId() + "\">Game " + game.getId() + "</a> is " + game.getState() + "</li>";
-        }
-
-        result += "</ul>";
-
-        return result;
-
+        return template.apply(values);
     }
 
     @RequestMapping(method = RequestMethod.GET, path = "/{gameId}")
@@ -56,9 +57,7 @@ public class GameWebController {
         TemplateLoader loader = new ClassPathTemplateLoader();
         loader.setPrefix("/templates");
         loader.setSuffix(".hbs");
-        Handlebars handlebars = new Handlebars(loader);
-
-        Template template = handlebars.compile("game-detail");
+        Template template = HandlebarsUtil.compile("game-detail");
 
         Map<String, Object> values = new HashMap<>();
         values.put("game", game);
@@ -89,11 +88,11 @@ public class GameWebController {
 
     }
 
-    @RequestMapping(method = RequestMethod.GET, path = "/{gameId}/join")
-    public void joinGame(HttpServletResponse response, @PathVariable long gameId) throws IOException {
+    @RequestMapping(method = RequestMethod.POST, path = "/join")
+    public void joinGame(HttpServletResponse response, GameUser gameUser) throws IOException {
 
-        gameService.joinGame(new GameUser(gameId,"Pedro"));
-        response.sendRedirect("/games/" + gameId);
+        gameService.joinGame(gameUser);
+        response.sendRedirect("/games/" + gameUser.getGameId());
 
     }
 
