@@ -12,7 +12,6 @@ import tech.bts.cardgame.service.GameUser;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Collection;
 
 @RestController
 @RequestMapping(path = "/games")
@@ -28,7 +27,18 @@ public class GameWebController {
     @RequestMapping(method = RequestMethod.GET)
     public String getAllGames() {
 
-        return buildGameList();
+        String result = "<h1>List of games</h1>\n";
+
+        result += "<ul><a href=\"/games/create\">Create Game</a>\n";
+
+        for (Game game : gameService.getAllGames()) {
+
+            result += "<li><a href=\"/games/" + game.getId() + "\">Game " + game.getId() + "</a> is " + game.getState() + "</li>";
+        }
+
+        result += "</ul>";
+
+        return result;
 
     }
 
@@ -37,12 +47,10 @@ public class GameWebController {
 
         Game game = gameService.getGameById(gameId);
 
-        String result = "<a href=\"/games\">Turn to games</a>";
-
-
-        result += "<h1>Game " + game.getId() + "</h1>";
-        result += "<p>State: " + game.getState() + "</p>";
-        result += "<p>Players " + game.getPlayerNames() + "</p>";
+        String result = "<a href=\"/games\">Turn to games</a>" +
+                        "<h1>Game " + game.getId() + "</h1>" +
+                        "<p>State: " + game.getState() + "</p>" +
+                        "<p>Players " + game.getPlayerNames() + "</p>";
 
         if (game.getState() == Game.State.OPEN){
             result += "<a href=\"/games/" + game.getId() + "/join\">Join game</a>";
@@ -68,21 +76,6 @@ public class GameWebController {
 
     }
 
-    private String buildGameList() {
-
-        String result = "<h1>List of games</h1>\n";
-
-        result += "<ul><a href=\"/games/create\">Create Game</a>\n";
-
-        for (Game game : gameService.getAllGames()) {
-
-            result += "<li><a href=\"/games/" + game.getId() + "\">Game " + game.getId() + "</a> is " + game.getState() + "</li>";
-        }
-
-        result += "</ul>";
-
-        return result;
-    }
 }
 
 
