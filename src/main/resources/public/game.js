@@ -1,15 +1,20 @@
 const urlParams = new URLSearchParams(window.location.search);
 const gameId = urlParams.get('gameId');
 
-const gamePromise = axios.get("http://localhost:8080/api/games/" + gameId);
+// if the url you want to call is yours you can call it like this "/api/games/"
+axios.get("http://localhost:8080/api/games/" + gameId)
+    .then(function(response) {
+    const game = response.data;
+    displayGame(game);
+    })
+    .catch(function(error) {
+        console.log("There was an error!", error);
+    } );
 
-gamePromise
 
-.then(function(response) {
+function displayGame(game) {
 
     let gameContainer = document.getElementById("game-container");
-
-    const game = response.data;
 
     const g = document.createElement("p");
     g.textContent = "Game ID : " + game.id;
@@ -21,11 +26,5 @@ gamePromise
     p.textContent = "Players: " + game.playerNames;
     gameContainer.appendChild(p);
 
-    const a = document.createElement('a');
-    const linkText = document.createTextNode("Turn back to games");
-    a.appendChild(linkText);
-    a.href = "http://localhost:8080/games.html";
-    document.body.appendChild(a);
 
-
-});
+}
