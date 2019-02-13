@@ -1,7 +1,6 @@
 const App = (props) => (
     <div>
-        <Title text="Games" />
-        <GamesList/>
-
+        <GamesList title="Game list"/>
+        <Article title="Some title" text="This is the text in the paragraph" />
     </div>
 );
