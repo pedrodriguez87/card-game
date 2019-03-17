@@ -30,7 +30,7 @@ public class GameRepositoryJdbc {
 
     public void update(Game game) {
         //update games set state = 'OPEN', players = 'spiderman' where id = 6;
-        jdbcTemplate.update("update games set state = '" + game.getState().toString() + "', players = '" + " " + "' where id = '" + game.getId() + "'");
+        jdbcTemplate.update("update games set state = '" + game.getState() + "', players = '" + " " + "' where id = '" + game.getId() + "'");
     }
 
     public void createOrUpdate(Game game) {
