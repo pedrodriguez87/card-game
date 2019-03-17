@@ -23,7 +23,7 @@ public class Application {
 
             Game game1 = gameService.createGame();
             Game game2 = gameService.createGame();
-            Game game3= gameService.createGame();
+            Game game3 = gameService.createGame();
 
             gameService.joinGame(new GameUser(game1.getId(),"Pedro"));
             gameService.joinGame(new GameUser(game1.getId(),"Carlos"));

@@ -25,6 +25,16 @@ function displayGame(game) {
     const p = document.createElement("p");
     p.textContent = "Players: " + game.playerNames;
     gameContainer.appendChild(p);
-
-
 }
+
+var addGameBtn = document.querySelector("#add-game");
+
+addGameBtn.addEventListener("click", function(){
+    console.log("Button was clicked");
+
+});
+
+addGameBtn.addEventListener("mouseover", function () {
+    console.log("Mouse over the button!")
+
+});

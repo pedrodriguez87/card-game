@@ -15,6 +15,10 @@ public class Game {
     private Map<String, Player> playersByUsername;
 
 
+    public void setState(State state) {
+        this.state = state;
+    }
+
     public Game(Deck deck) {
         this.deck = deck;
         this.state = State.OPEN;
@@ -47,6 +51,10 @@ public class Game {
         if (playersByUsername.size() == 2) {
             state = State.PLAYING;
         }
+    }
+
+    public void setPlayersByUsername(Map<String, Player> playersByUsername) {
+        this.playersByUsername = playersByUsername;
     }
 
     public Set<String> getPlayerNames() {
